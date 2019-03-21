@@ -4,20 +4,34 @@ using UnityEngine;
 
 public class MoveBullet : MonoBehaviour
 {
-    private int direction;
+    private Transform target;
+
     // Start is called before the first frame update
     void Start()
     {
-        direction = (int) transform.rotation.x;
+        target = GameObject.Find("Enemy").transform;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.left * Time.deltaTime*2, Camera.main.transform);
-        deleteBullet();
+
+        //deleteBullet();
+
+        transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 5);
     }
 
+    Vector3 somePosition()
+    {
+        return new Vector3(5, 2, 0);
+    }
+
+    /*
+     * Unused
+     * Based on bullets travelling off-map, which likely isn't a case in the final product
+     * Can be changed to delete bullets on collision instead.
+     * */
     void deleteBullet()
     {
         int x = (int) transform.position.x;

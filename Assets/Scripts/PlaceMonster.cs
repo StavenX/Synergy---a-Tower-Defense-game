@@ -14,10 +14,13 @@ public class PlaceMonster : MonoBehaviour {
      */
     private bool CanPlaceMonster()
     {
+        /*
         int cost = monsterPrefab.GetComponent<MonsterData>
             ().levels[0].cost;
 
         return monster == null && gameManager.Gold >= cost; 
+        */
+        return monster == null;
     }
 
     private bool CanUpgradeMonster()
