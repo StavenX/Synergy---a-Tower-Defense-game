@@ -29,8 +29,8 @@ public class TowerBehaviour : MonoBehaviour
         //1.0 = 100%, 0.5 = 50% etc.
         rotationAmount = 1.0f;
 
-        //sets rotation target to a placeholder enemy object on the map
-        target = GameObject.Find("Enemy").transform;
+        //sets rotation target to a an enemy
+        target = getNewTarget();
     }
 
     // Update is called once per frame
@@ -39,23 +39,43 @@ public class TowerBehaviour : MonoBehaviour
         counter++;
 
         //reduces amount of work per update to reduce strain on computer
-        if (counter % 50 == 0)
+        if (counter % 30 == 0)
         {
             //rotates towers 90 degrees
             //transform.Rotate(Vector3.forward * -90);
 
-
-            Vector3 vectorToTarget = target.position - transform.position;
-            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
-            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-
-            //Slerp or RotateTowards methods
-            
-            transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
-            
-
-            shootBullet();
+            if (target == null)
+            {
+                target = getNewTarget();
+            }
+            if (target != null)
+            {
+                rotateToTarget();
+                shootBullet();
+            }
         }
+    }
+
+    Transform getNewTarget()
+    {
+        try
+        {
+            return GameObject.Find("Enemy(Clone)").transform;
+        }
+        catch (System.NullReferenceException ex)
+        {
+            return null;
+        }
+    }
+
+    void rotateToTarget()
+    {
+        Vector3 vectorToTarget = target.position - transform.position;
+        float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
+        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        //Slerp or RotateTowards methods            
+        transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
     }
 
     /*

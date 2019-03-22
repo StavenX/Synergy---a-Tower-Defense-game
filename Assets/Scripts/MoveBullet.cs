@@ -9,17 +9,22 @@ public class MoveBullet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        target = GameObject.Find("Enemy").transform;
+        target = GameObject.Find("Enemy(Clone)").transform;
         
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
+        if (target == null || transform.position == target.position)
+        {
+            Destroy(gameObject);
+        }
         //deleteBullet();
 
-        transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 5);
+        transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 10);
+        
     }
 
     Vector3 somePosition()
