@@ -10,7 +10,6 @@ public class MoveBullet : MonoBehaviour
     void Start()
     {
         target = GameObject.Find("Enemy(Clone)").transform;
-        
     }
 
     // Update is called once per frame

@@ -74,7 +74,7 @@ public class TowerBehaviour : MonoBehaviour
         float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
         Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        //Slerp or RotateTowards methods            
+        //Slerp or RotateTowards methods  
         transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
     }
 
