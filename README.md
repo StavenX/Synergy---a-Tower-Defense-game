@@ -1,4 +1,4 @@
-#Synergy: A Tower Defense Game
+# Synergy: A Tower Defense Game
 
 ## Hello!
 ### Welcome to a project made by us; a few students attending the University of Agder's IT & IS program. We made this project for one of the courses which is called "IS-213 Opensource". Our goal with this project is to see how it works when you try to make a game in an Opensource environment.
