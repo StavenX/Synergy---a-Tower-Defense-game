@@ -15,6 +15,7 @@ public class PlaceMonster : MonoBehaviour {
     private bool CanPlaceMonster()
     {
         /*
+        //doesn't work @EDVIN pls fix
         int cost = monsterPrefab.GetComponent<MonsterData>
             ().levels[0].cost;
 

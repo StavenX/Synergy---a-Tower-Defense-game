@@ -16,8 +16,13 @@ public class MoveBullet : MonoBehaviour
     void Update()
     {
         
-        if (target == null || transform.position == target.position)
+        if (target == null)
         {
+            Destroy(gameObject);
+        }
+        else if (transform.position == target.position)
+        {
+            Debug.Log("hello");
             Destroy(gameObject);
         }
         //deleteBullet();
