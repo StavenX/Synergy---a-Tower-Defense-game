@@ -9,6 +9,7 @@ public class CreateEnemies : MonoBehaviour
     private GameObject enemy;
     public Vector3 testPos;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,5 +32,6 @@ public class CreateEnemies : MonoBehaviour
     {
         enemy = (GameObject)
                 Instantiate(enemyPrefab, testPos, Quaternion.identity);
+        enemy.transform.parent = transform;
     }
 }

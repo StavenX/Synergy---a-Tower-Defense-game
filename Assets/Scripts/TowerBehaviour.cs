@@ -16,10 +16,19 @@ public class TowerBehaviour : MonoBehaviour
     float speed;
     float rotationAmount;
 
+    int towerWaitingPeriod;
+    float towerRange;
+
     // Start is called before the first frame update
     void Start()
     {
         counter = 0;
+
+        //how long the tower has to wait between each shot
+        towerWaitingPeriod = 30;
+
+        //how far the tower can shoot
+        towerRange = 3.0f;
 
         //high speed means towers instantly turns to target, lower speed means they turn slowly
         //(if using Time.deltaTime * speed)
@@ -39,19 +48,30 @@ public class TowerBehaviour : MonoBehaviour
         counter++;
 
         //reduces amount of work per update to reduce strain on computer
-        if (counter % 30 == 0)
+        if (counter % towerWaitingPeriod * Time.deltaTime == 0)
         {
             //rotates towers 90 degrees
             //transform.Rotate(Vector3.forward * -90);
 
+            
             if (target == null)
             {
                 target = getNewTarget();
-            }
-            if (target != null)
-            {
                 rotateToTarget();
-                shootBullet();
+            }
+            else
+            {
+                float distance = Vector3.Distance(target.position, transform.position);
+                if (distance > towerRange)
+                {
+                    target = getNewTarget();
+                    rotateToTarget();
+                }
+                else
+                {
+                    rotateToTarget();
+                    shootBullet();
+                }                
             }
         }
     }
@@ -60,7 +80,20 @@ public class TowerBehaviour : MonoBehaviour
     {
         try
         {
-            return GameObject.Find("Enemy(Clone)").transform;
+            Transform parent = GameObject.Find("EnemySpawner").transform;
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                Debug.Log("Child " + i + ", pos " + parent.GetChild(i).position);
+                Transform child = parent.GetChild(i);
+                if (Vector3.Distance(child.position, transform.position) < towerRange)
+                {
+                    return child;
+                } else
+                {
+                    //do something?
+                }
+            }
+            return null;
         }
         catch (System.NullReferenceException ex)
         {

@@ -48,7 +48,6 @@ public class PlaceMonster : MonoBehaviour {
         {
             monster = (GameObject)
                 Instantiate(monsterPrefab, transform.position, Quaternion.identity);
-
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.PlayOneShot(audioSource.clip); 
         }

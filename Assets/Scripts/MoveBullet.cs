@@ -22,7 +22,6 @@ public class MoveBullet : MonoBehaviour
         }
         else if (transform.position == target.position)
         {
-            Debug.Log("hello");
             Destroy(gameObject);
         }
         //deleteBullet();

@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyBehaviour : MonoBehaviour
 {
     public Vector3 target;
+    public bool inRange = false;
 
     private int currentTarget;
 
