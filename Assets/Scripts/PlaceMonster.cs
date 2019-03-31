@@ -14,10 +14,14 @@ public class PlaceMonster : MonoBehaviour {
      */
     private bool CanPlaceMonster()
     {
+        /*
+        //doesn't work @EDVIN pls fix
         int cost = monsterPrefab.GetComponent<MonsterData>
             ().levels[0].cost;
 
         return monster == null && gameManager.Gold >= cost; 
+        */
+        return monster == null;
     }
 
     private bool CanUpgradeMonster()
@@ -44,7 +48,6 @@ public class PlaceMonster : MonoBehaviour {
         {
             monster = (GameObject)
                 Instantiate(monsterPrefab, transform.position, Quaternion.identity);
-
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.PlayOneShot(audioSource.clip); 
         }
