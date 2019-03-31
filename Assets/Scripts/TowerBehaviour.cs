@@ -28,7 +28,7 @@ public class TowerBehaviour : MonoBehaviour
         towerWaitingPeriod = 30;
 
         //how far the tower can shoot
-        towerRange = 3.0f;
+        towerRange = 12.0f;
 
         //high speed means towers instantly turns to target, lower speed means they turn slowly
         //(if using Time.deltaTime * speed)
@@ -41,7 +41,7 @@ public class TowerBehaviour : MonoBehaviour
         //sets rotation target to a an enemy
         target = getNewTarget();
     }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -56,17 +56,25 @@ public class TowerBehaviour : MonoBehaviour
             
             if (target == null)
             {
-                target = getNewTarget();
-                rotateToTarget();
+                try
+                {
+                    target = getNewTarget();
+                    rotateToTarget();
+                } catch (System.NullReferenceException)
+                {
+                    //dont have to do anything
+                }
             }
             else
             {
                 float distance = Vector3.Distance(target.position, transform.position);
-                if (distance > towerRange)
+                //gets new target and rotates if not in range
+                if (distance > towerRange) 
                 {
                     target = getNewTarget();
                     rotateToTarget();
                 }
+                //rotates and shoots if in range of target
                 else
                 {
                     rotateToTarget();
@@ -76,10 +84,20 @@ public class TowerBehaviour : MonoBehaviour
         }
     }
 
+    private bool isInRange(Transform t)
+    {
+        return Vector3.Distance(transform.position, t.position) <= towerRange;
+    }
+
     Transform getNewTarget()
     {
         try
         {
+            //first object with that name, is always the first enemy spawned right now
+            //because tower range isn't considered
+            return GameObject.Find("Enemy(Clone)").transform;
+
+            /* //test with tower range, didn't quite work
             Transform parent = GameObject.Find("EnemySpawner").transform;
             for (int i = 0; i < parent.childCount; i++)
             {
@@ -94,8 +112,9 @@ public class TowerBehaviour : MonoBehaviour
                 }
             }
             return null;
+            */
         }
-        catch (System.NullReferenceException ex)
+        catch (System.NullReferenceException)
         {
             return null;
         }

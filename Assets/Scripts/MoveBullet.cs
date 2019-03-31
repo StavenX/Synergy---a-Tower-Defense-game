@@ -5,30 +5,62 @@ using UnityEngine;
 public class MoveBullet : MonoBehaviour
 {
     private Transform target;
+    public static int totalBullets = 0;
+    public float damage;
+    public float bulletSpeed;
 
     // Start is called before the first frame update
     void Start()
     {
+        damage = 10.0f;
+        bulletSpeed = 20.0f;
+        totalBullets++;
+        //Debug.Log(totalBullets);
         target = GameObject.Find("Enemy(Clone)").transform;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        if (target == null)
+        try
         {
-            Destroy(gameObject);
-        }
-        else if (transform.position == target.position)
-        {
-            Destroy(gameObject);
-        }
-        //deleteBullet();
+            if (target == null)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+            }
+            /*
+            else if (transform.position == target.position)
+            {
+                Destroy(gameObject);
+            }*/
+            //deleteBullet();
 
-        transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 10);
+            transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * bulletSpeed);
+        }
+        //target already destroyed
+        catch (MissingReferenceException) {
+            Destroy(gameObject);
+        }
+        catch (System.NullReferenceException)
+        {
+            Destroy(gameObject);
+        }
         
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            collision.gameObject.GetComponent<EnemyBehaviour>().HP -= this.damage;
+        }
+        Debug.Log("bullet trigger");
+        Destroy(gameObject);
+    }
+
 
     Vector3 somePosition()
     {
