@@ -9,6 +9,8 @@ public class BulletBehaviour : MonoBehaviour
     public float damage;
     public float bulletSpeed;
 
+    private Vector3 lastTargetPos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,11 +26,16 @@ public class BulletBehaviour : MonoBehaviour
         {
             if (target == null)
             {
-                Destroy(gameObject);
+                moveToPosition(lastTargetPos);
+                if (transform.position == lastTargetPos)
+                {
+                    Destroy(gameObject);
+                }
             }
             else
             {
-                transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * bulletSpeed);
+                lastTargetPos = target.position;
+                moveToPosition(target.position);
             }            
         }
         //target already destroyed
@@ -40,6 +47,11 @@ public class BulletBehaviour : MonoBehaviour
             Destroy(gameObject);
         }
         
+    }
+
+    private void moveToPosition(Vector3 position)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, position, Time.deltaTime * bulletSpeed);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

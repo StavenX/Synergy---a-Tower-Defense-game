@@ -7,13 +7,13 @@ public class CreateEnemies : MonoBehaviour
     int counter = 0;
     public GameObject enemyPrefab;
     private GameObject enemy;
-    public Vector3 testPos;
+    public Vector3 spawnPosition;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        testPos = new Vector3(-9.0f, 4.0f);
+        spawnPosition = new Vector3(-11.0f, 4.0f);
         newEnemy();
     }
 
@@ -31,7 +31,7 @@ public class CreateEnemies : MonoBehaviour
     void newEnemy()
     {
         enemy = (GameObject)
-                Instantiate(enemyPrefab, testPos, Quaternion.identity);
+                Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         enemy.transform.parent = transform;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class TowerBehaviour : MonoBehaviour
@@ -29,7 +30,7 @@ public class TowerBehaviour : MonoBehaviour
         towerWaitingPeriod = 30;
 
         //how far the tower can shoot
-        towerRange = 5.0f;
+        towerRange = 8.0f;
 
 
         enemies = new LinkedList<GameObject>();
