@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveBullet : MonoBehaviour
+public class BulletBehaviour : MonoBehaviour
 {
-    private Transform target;
+    public Transform target { get; set; }
     public static int totalBullets = 0;
     public float damage;
     public float bulletSpeed;
@@ -13,10 +13,8 @@ public class MoveBullet : MonoBehaviour
     void Start()
     {
         damage = 10.0f;
-        bulletSpeed = 20.0f;
+        bulletSpeed = 10.0f;
         totalBullets++;
-        //Debug.Log(totalBullets);
-        target = GameObject.Find("Enemy(Clone)").transform;
     }
 
     // Update is called once per frame
@@ -30,15 +28,8 @@ public class MoveBullet : MonoBehaviour
             }
             else
             {
-            }
-            /*
-            else if (transform.position == target.position)
-            {
-                Destroy(gameObject);
-            }*/
-            //deleteBullet();
-
-            transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * bulletSpeed);
+                transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * bulletSpeed);
+            }            
         }
         //target already destroyed
         catch (MissingReferenceException) {
@@ -57,7 +48,6 @@ public class MoveBullet : MonoBehaviour
         {
             collision.gameObject.GetComponent<EnemyBehaviour>().takeDamage(damage);
         }
-        Debug.Log("bullet trigger");
         Destroy(gameObject);
     }
 

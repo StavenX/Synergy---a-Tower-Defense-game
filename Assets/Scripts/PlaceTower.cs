@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlaceMonster : MonoBehaviour {
+public class PlaceTower : MonoBehaviour {
 
     public GameObject monsterPrefab;
     private GameObject monster;
-    private GameManagerBehaviour gameManager; 
+    private GameManagerBehaviour gameManager;
+    public int towerCost;
 
     /**
      *  Only allows one monster per tower-spot. If monster is null, no monster is here 
@@ -21,7 +22,7 @@ public class PlaceMonster : MonoBehaviour {
 
         return monster == null && gameManager.Gold >= cost; 
         */
-        return monster == null;
+        return (monster == null && gameManager.Gold >= towerCost);
     }
 
     private bool CanUpgradeMonster()
@@ -49,7 +50,8 @@ public class PlaceMonster : MonoBehaviour {
             monster = (GameObject)
                 Instantiate(monsterPrefab, transform.position, Quaternion.identity);
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.PlayOneShot(audioSource.clip); 
+            audioSource.PlayOneShot(audioSource.clip);
+            gameManager.Gold -= towerCost;
         }
         else if (CanUpgradeMonster())
         {
@@ -60,10 +62,15 @@ public class PlaceMonster : MonoBehaviour {
             gameManager.Gold -= monster.GetComponent<MonsterData>
                 ().CurrentLevel.cost; 
         }
+        else
+        {
+            Debug.Log("You don't have enough gold!");
+        }
     }
 
     private void Start()
     {
+        towerCost = 200;
         gameManager =
             GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
     }

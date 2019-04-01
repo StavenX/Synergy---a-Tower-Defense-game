@@ -7,7 +7,7 @@ public class TowerBehaviour : MonoBehaviour
     public GameObject bulletPrefab;
     private GameObject bullet;
     private int counter;
-    private LinkedList<GameObject> eligibleTargets;
+    private LinkedList<GameObject> enemies;
 
 
     // The target marker.
@@ -29,9 +29,11 @@ public class TowerBehaviour : MonoBehaviour
         towerWaitingPeriod = 30;
 
         //how far the tower can shoot
-        towerRange = 12.0f;
+        towerRange = 5.0f;
 
-        eligibleTargets = new LinkedList<GameObject>();
+
+        enemies = new LinkedList<GameObject>();
+
                 
         //high speed means towers instantly turns to target, lower speed means they turn slowly
         //(if using Time.deltaTime * speed)
@@ -48,6 +50,8 @@ public class TowerBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        this.enemies = getEnemies();
+
         counter++;
 
         //reduces amount of work per update to reduce strain on computer
@@ -56,23 +60,10 @@ public class TowerBehaviour : MonoBehaviour
             //rotates towers 90 degrees
             //transform.Rotate(Vector3.forward * -90);
 
-            
-            if (target == null)
-            {
-                try
-                {
-                    target = getNewTarget();
-                    rotateToTarget();
-                } catch (System.NullReferenceException)
-                {
-                    //dont have to do anything
-                }
-            }
-            else
-            {
-                float distance = Vector3.Distance(target.position, transform.position);
+            if (target != null)
+            { 
                 //gets new target and rotates if not in range
-                if (distance > towerRange) 
+                if (!isInRange(target))
                 {
                     target = getNewTarget();
                     rotateToTarget();
@@ -82,69 +73,69 @@ public class TowerBehaviour : MonoBehaviour
                 {
                     rotateToTarget();
                     shootBullet();
-                }                
+                }               
+            } else
+            {
+                target = getNewTarget();
             }
         }
-    }
-    
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Enemy")
-        {
-
-        }
-
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        
-    }
+    }    
 
     private bool isInRange(Transform t)
     {
         return Vector3.Distance(transform.position, t.position) <= towerRange;
     }
 
-    Transform getNewTarget()
+    /**
+     * Returns the enemy that is closest to their endgame
+     * Returns null if no targets are available for current tower
+     */
+    private Transform getNewTarget()
     {
         try
         {
-            //first object with that name, is always the first enemy spawned right now
-            //because tower range isn't considered
-            return GameObject.Find("Enemy(Clone)").transform;
+            //temp values, will always be overwritten unless enemies is empty
+            //in which case function ends up returning null
+            int furthestWaypoint = -1;
+            Transform priorityEnemy = null;
 
-            /* //test with tower range, didn't quite work
-            Transform parent = GameObject.Find("EnemySpawner").transform;
-            for (int i = 0; i < parent.childCount; i++)
+            foreach (GameObject enemy in enemies)
             {
-                Debug.Log("Child " + i + ", pos " + parent.GetChild(i).position);
-                Transform child = parent.GetChild(i);
-                if (Vector3.Distance(child.position, transform.position) < towerRange)
+                if (isInRange(enemy.transform))
                 {
-                    return child;
-                } else
-                {
-                    //do something?
-                }
+                    int enemyWaypoint = enemy.GetComponent<EnemyBehaviour>().CurrentWaypoint;
+
+                    //sets new priorityenemy if they have reached a waypoint further along the map
+                    if (enemyWaypoint > furthestWaypoint)
+                    {
+                        priorityEnemy = enemy.transform;
+                        furthestWaypoint = enemyWaypoint;
+                    }
+                }                
             }
-            return null;
-            */
+            return priorityEnemy;
         }
         catch (System.NullReferenceException)
         {
             return null;
         }
+        catch (System.Exception)
+        {
+            return null;
+        }
     }
 
-    void rotateToTarget()
+    private void rotateToTarget()
     {
-        Vector3 vectorToTarget = target.position - transform.position;
-        float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
-        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+        if (target != null)
+        {
+            Vector3 vectorToTarget = target.position - transform.position;
+            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
+            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        //Slerp or RotateTowards methods  
-        transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
+            //Slerp or RotateTowards methods  
+            transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
+        }
     }
 
     /*
@@ -169,6 +160,18 @@ public class TowerBehaviour : MonoBehaviour
         //new bullet spawns on top of tower
         bullet = (GameObject)
                 Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        bullet.GetComponent<BulletBehaviour>().target = this.target;
+    }
+
+
+    private LinkedList<GameObject> getEnemies()
+    {
+        LinkedList<GameObject> list = new LinkedList<GameObject>();
+        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            list.AddLast(enemy);
+        }
+        return list;
     }
 
 }
