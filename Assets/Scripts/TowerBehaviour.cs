@@ -7,7 +7,7 @@ public class TowerBehaviour : MonoBehaviour
 {
     public GameObject bulletPrefab;
     private GameObject bullet;
-    private int counter;
+    private int frameCounter;
     private LinkedList<GameObject> enemies;
 
 
@@ -24,16 +24,19 @@ public class TowerBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        counter = 0;
-
         //how long the tower has to wait between each shot
-        towerWaitingPeriod = 30;
+        towerWaitingPeriod = 20;
+
+        System.Random rand = new System.Random();
+        frameCounter = rand.Next(0, towerWaitingPeriod - 1);
+        //frameCounter = 0;
+
 
         //how far the tower can shoot
         towerRange = 8.0f;
 
 
-        enemies = new LinkedList<GameObject>();
+        enemies = getEnemies();
 
                 
         //high speed means towers instantly turns to target, lower speed means they turn slowly
@@ -53,14 +56,13 @@ public class TowerBehaviour : MonoBehaviour
     {
         this.enemies = getEnemies();
 
-        counter++;
+        frameCounter++;
+
+        //shootBullet();
 
         //reduces amount of work per update to reduce strain on computer
-        if (counter % towerWaitingPeriod * Time.deltaTime == 0)
+        if (frameCounter % towerWaitingPeriod * Time.deltaTime == 0)
         {
-            //rotates towers 90 degrees
-            //transform.Rotate(Vector3.forward * -90);
-
             if (target != null)
             { 
                 //gets new target and rotates if not in range
@@ -68,6 +70,7 @@ public class TowerBehaviour : MonoBehaviour
                 {
                     target = getNewTarget();
                     rotateToTarget();
+                    shootBullet();
                 }
                 //rotates and shoots if in range of target
                 else
@@ -159,9 +162,16 @@ public class TowerBehaviour : MonoBehaviour
         //Vector3 v = new Vector3(transform.position.x, transform.position.y);
 
         //new bullet spawns on top of tower
-        bullet = (GameObject)
-                Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-        bullet.GetComponent<BulletBehaviour>().target = this.target;
+        if (target != null && frameCounter % towerWaitingPeriod * Time.deltaTime == 0)
+        {
+            bullet = (GameObject)
+                    Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+            bullet.GetComponent<BulletBehaviour>().target = this.target;
+
+            //play sound (laser)
+            AudioSource audio = bullet.GetComponent<AudioSource>();
+            audio.PlayOneShot(audio.clip);
+        }
     }
 
 

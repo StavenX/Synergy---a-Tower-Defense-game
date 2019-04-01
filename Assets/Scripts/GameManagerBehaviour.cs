@@ -6,11 +6,17 @@ using UnityEngine.UI;
 public class GameManagerBehaviour : MonoBehaviour
 {
     public Text goldLabel;
-    private int gold; 
+    public Text waveLabel;
+    public Text enemiesLeftLabel;
 
-    private void Start()
+    private int wave;
+    private int gold;
+    private int enemiesLeft;
+
+
+    public void Start()
     {
-        Gold = 1000; 
+        Gold = 1000;
     }
 
     public int Gold
@@ -23,6 +29,32 @@ public class GameManagerBehaviour : MonoBehaviour
         {
             gold = value;
             goldLabel.GetComponent<Text>().text = "GOLD: " + gold; 
+        }
+    }
+
+    public int Wave
+    {
+        get
+        {
+            return wave;
+        }
+        set
+        {
+            wave = value;
+            waveLabel.GetComponent<Text>().text = "WAVE: " + wave;
+        }
+    }
+
+    public int EnemiesLeft
+    {
+        get
+        {
+            return enemiesLeft;
+        }
+        set
+        {
+            enemiesLeft = value;
+            enemiesLeftLabel.GetComponent<Text>().text = "ENEMIES LEFT: " + enemiesLeft;
         }
     }
 
