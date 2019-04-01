@@ -7,6 +7,7 @@ public class TowerBehaviour : MonoBehaviour
     public GameObject bulletPrefab;
     private GameObject bullet;
     private int counter;
+    private LinkedList<GameObject> eligibleTargets;
 
 
     // The target marker.
@@ -30,6 +31,8 @@ public class TowerBehaviour : MonoBehaviour
         //how far the tower can shoot
         towerRange = 12.0f;
 
+        eligibleTargets = new LinkedList<GameObject>();
+                
         //high speed means towers instantly turns to target, lower speed means they turn slowly
         //(if using Time.deltaTime * speed)
         //speed = 200.0f;
@@ -82,6 +85,20 @@ public class TowerBehaviour : MonoBehaviour
                 }                
             }
         }
+    }
+    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+
+        }
+
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        
     }
 
     private bool isInRange(Transform t)

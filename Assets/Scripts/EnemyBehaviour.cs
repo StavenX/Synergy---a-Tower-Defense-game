@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    public float HP;
+    private float HP;
     public Vector3 target;
     public bool inRange = false;
 
@@ -41,11 +41,21 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
+    public void takeDamage (float amount)
+    {
+        this.HP -= amount;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         var name = collision.gameObject.name;
         Debug.Log("enemy: trigger enter by " + name.ToString());
 
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        
     }
 
     private Vector3 getNextTarget()

@@ -55,7 +55,7 @@ public class MoveBullet : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            collision.gameObject.GetComponent<EnemyBehaviour>().HP -= this.damage;
+            collision.gameObject.GetComponent<EnemyBehaviour>().takeDamage(damage);
         }
         Debug.Log("bullet trigger");
         Destroy(gameObject);
