@@ -35,7 +35,7 @@ using UnityEngine.SceneManagement;
 public class GameOver : MonoBehaviour
 {
 
-    void RestartLevel()
+    public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

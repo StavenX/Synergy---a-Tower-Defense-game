@@ -15,13 +15,14 @@ public class PlaceTower : MonoBehaviour {
      */
     private bool CanPlaceMonster()
     {
-        /*
         //doesn't work @EDVIN pls fix
+        /*
         int cost = monsterPrefab.GetComponent<MonsterData>
             ().levels[0].cost;
 
         return monster == null && gameManager.Gold >= cost; 
         */
+        
         return (monster == null && gameManager.Gold >= towerCost);
     }
 
@@ -70,7 +71,7 @@ public class PlaceTower : MonoBehaviour {
 
     private void Start()
     {
-        towerCost = 200;
+        towerCost = 500;
         gameManager =
             GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
     }

@@ -17,6 +17,7 @@ public class MonsterData : MonoBehaviour
 
     private void OnEnable()
     {
+        levels[0] = new MonsterLevel();
         CurrentLevel = levels[0];
     }
 

@@ -9,11 +9,13 @@ public class BulletBehaviour : MonoBehaviour
     public float damage;
     public float bulletSpeed;
 
+    private Vector3 lastTargetPos;
+
     // Start is called before the first frame update
     void Start()
     {
         damage = 10.0f;
-        bulletSpeed = 10.0f;
+        bulletSpeed = 30.0f;
         totalBullets++;
     }
 
@@ -24,13 +26,20 @@ public class BulletBehaviour : MonoBehaviour
         {
             if (target == null)
             {
-                Destroy(gameObject);
+                //BUG: bullet randomly goes to 0,0 might be here
+                moveTowardsPosition(lastTargetPos);
+                if (transform.position == lastTargetPos)
+                {
+                    Destroy(gameObject);
+                }
             }
-            else
-            {
-                transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * bulletSpeed);
+            else //has valid target
+            {                
+                lastTargetPos = target.position; //value used during next Update()
+                moveTowardsPosition(target.position);
             }            
         }
+        //Not sure which Exceptions are correct
         //target already destroyed
         catch (MissingReferenceException) {
             Destroy(gameObject);
@@ -42,11 +51,25 @@ public class BulletBehaviour : MonoBehaviour
         
     }
 
+    /**
+     * Moves bullet towards a position
+     * Use target as parameter
+     * TODO: just use target in this method?
+     */
+    private void moveTowardsPosition(Vector3 position)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, position, Time.deltaTime * bulletSpeed);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            collision.gameObject.GetComponent<EnemyBehaviour>().takeDamage(damage);
+            var HP = collision.gameObject.GetComponent<EnemyBehaviour>().takeDamage(damage);
+            if (HP <= 0)
+            {
+                collision.gameObject.GetComponent<EnemyBehaviour>().die();
+            }
         }
         Destroy(gameObject);
     }
