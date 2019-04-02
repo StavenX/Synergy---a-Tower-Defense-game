@@ -42,7 +42,7 @@ public class EnemyBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        HP = 40.0f;
+        HP = 80.0f;
 
         loadWaypoints();
 
@@ -62,11 +62,12 @@ public class EnemyBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if (HP <= 0.0f)
         {
-            Destroy(gameObject);
-            gameManager.Gold += 30;
+            die();
         }
+        */
         moveToWaypoint();
         if (hasReachedWaypoint())
         {
@@ -78,13 +79,21 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 Debug.Log("Oh no! The enemy reached the castle!");
                 Destroy(gameObject);
+                gameManager.Health -= 10;
             }
         }
     }
 
-    public void takeDamage (float amount)
+    public void die ()
+    {
+        Destroy(gameObject);
+        gameManager.Gold += 30;
+    }
+
+    public float takeDamage (float amount)
     {
         this.HP -= amount;
+        return this.HP;
     }
 
     private Vector3 getNextWaypoint()

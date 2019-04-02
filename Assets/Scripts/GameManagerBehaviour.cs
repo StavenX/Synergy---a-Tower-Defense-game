@@ -6,17 +6,35 @@ using UnityEngine.UI;
 public class GameManagerBehaviour : MonoBehaviour
 {
     public Text goldLabel;
-    public Text waveLabel;
-    public Text enemiesLeftLabel;
-
-    private int wave;
     private int gold;
+
+    public Text waveLabel;
+    private int wave;
+
+    public Text enemiesLeftLabel;
     private int enemiesLeft;
 
+    public Text healthLabel;
+    private int health;
 
-    public void Start()
+    public Text gameOverLabel;
+    private bool gameOver;
+
+
+    private void Start()
     {
         Gold = 1000;
+        Health = 10;
+    }
+
+    private void Update()
+    {
+        if (Health <= 0)
+        {
+            GameOver = true;
+            Debug.Log("gameover: " + gameOverLabel.text);
+            gameObject.GetComponent<GameOver>().RestartLevel();
+        }
     }
 
     public int Gold
@@ -58,4 +76,24 @@ public class GameManagerBehaviour : MonoBehaviour
         }
     }
 
+    public int Health
+    {
+        get { return health; }
+        set
+        {
+            health = value;
+            healthLabel.GetComponent<Text>().text = "HEALTH: " + health;
+        }
+    }
+
+
+    public bool GameOver
+    {
+        get { return gameOver; }
+        set
+        {
+            gameOver = value;
+            gameOverLabel.GetComponent<Text>().text = "GAME !UNDER";
+        }
+    }
 }

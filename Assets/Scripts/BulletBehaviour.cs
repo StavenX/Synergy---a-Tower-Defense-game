@@ -58,7 +58,11 @@ public class BulletBehaviour : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            collision.gameObject.GetComponent<EnemyBehaviour>().takeDamage(damage);
+            var HP = collision.gameObject.GetComponent<EnemyBehaviour>().takeDamage(damage);
+            if (HP <= 0)
+            {
+                collision.gameObject.GetComponent<EnemyBehaviour>().die();
+            }
         }
         Destroy(gameObject);
     }
