@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -63,24 +64,33 @@ public class TowerBehaviour : MonoBehaviour
         //reduces amount of work per update to reduce strain on computer
         if (frameCounter % towerWaitingPeriod * Time.deltaTime == 0)
         {
-            if (target != null)
-            { 
-                //gets new target and rotates if not in range
-                if (!isInRange(target))
+            try
+            {
+                if (target != null)
+                {
+                    //gets new target and rotates if not in range
+                    if (!isInRange(target))
+                    {
+                        target = getNewTarget();
+                        rotateToTarget();
+                        shootBullet();
+                    }
+                    //rotates and shoots if in range of target
+                    else
+                    {
+                        rotateToTarget();
+                        shootBullet();
+                    }
+                }
+                else
                 {
                     target = getNewTarget();
                     rotateToTarget();
                     shootBullet();
                 }
-                //rotates and shoots if in range of target
-                else
-                {
-                    rotateToTarget();
-                    shootBullet();
-                }               
-            } else
+            } catch (NullReferenceException ex)
             {
-                target = getNewTarget();
+                Debug.Log(ex.Message);
             }
         }
     }    
@@ -99,7 +109,7 @@ public class TowerBehaviour : MonoBehaviour
         try
         {
             //temp values, will always be overwritten unless enemies is empty
-            //in which case function ends up returning null
+            //in which case function ends up returning null -- or throw an exception, depends what we choose to keep
             int furthestWaypoint = -1;
             Transform priorityEnemy = null;
 
@@ -112,10 +122,17 @@ public class TowerBehaviour : MonoBehaviour
                     //sets new priorityenemy if they have reached a waypoint further along the map
                     if (enemyWaypoint > furthestWaypoint)
                     {
-                        priorityEnemy = enemy.transform;
-                        furthestWaypoint = enemyWaypoint;
+                        if (enemy != null)
+                        {
+                            priorityEnemy = enemy.transform;
+                            furthestWaypoint = enemyWaypoint;
+                        }
                     }
                 }                
+            }
+            if (priorityEnemy == null)
+            {
+                throw new NullReferenceException("There are no targets within range of this tower");
             }
             return priorityEnemy;
         }
@@ -162,7 +179,7 @@ public class TowerBehaviour : MonoBehaviour
         //Vector3 v = new Vector3(transform.position.x, transform.position.y);
 
         //new bullet spawns on top of tower
-        if (target != null && frameCounter % towerWaitingPeriod * Time.deltaTime == 0)
+        if (target != null)
         {
             bullet = (GameObject)
                     Instantiate(bulletPrefab, transform.position, Quaternion.identity);

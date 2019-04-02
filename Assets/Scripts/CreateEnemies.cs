@@ -71,7 +71,7 @@ public class CreateEnemies : MonoBehaviour
 
         enemy = (GameObject)
                 Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-        enemy.transform.parent = transform;
+        enemy.transform.SetParent(transform);
         gameManager.EnemiesLeft--;
     }
 
