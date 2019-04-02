@@ -11,6 +11,8 @@ public class TowerBehaviour : MonoBehaviour
     private int frameCounter;
     private LinkedList<GameObject> enemies;
 
+    private GameManagerBehaviour gameManager;
+
 
     // The target marker.
     public Transform target;
@@ -25,8 +27,10 @@ public class TowerBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
+
         //how long the tower has to wait between each shot
-        towerWaitingPeriod = 20;
+        towerWaitingPeriod = 40;
 
         System.Random rand = new System.Random();
         frameCounter = rand.Next(0, towerWaitingPeriod - 1);
@@ -95,6 +99,10 @@ public class TowerBehaviour : MonoBehaviour
         }
     }    
 
+
+    /**
+     * Checks if tower is in range of the Transform object
+     */
     private bool isInRange(Transform t)
     {
         return Vector3.Distance(transform.position, t.position) <= towerRange;
@@ -146,6 +154,9 @@ public class TowerBehaviour : MonoBehaviour
         }
     }
 
+    /**
+     * Rotates the tower to its current target
+     */
     private void rotateToTarget()
     {
         if (target != null)
@@ -159,7 +170,7 @@ public class TowerBehaviour : MonoBehaviour
         }
     }
 
-    /*
+    /**
      * Fires a bullet when a tower is clicked
      * Debug use mostly
      * */
@@ -170,14 +181,10 @@ public class TowerBehaviour : MonoBehaviour
     }
 
     /**
-     * Tower shoots a bullet
+     * Tower shoots a bullet at it's current target
      * */
     void shootBullet()
     {
-        //use v as second constructor parameter for bullet to place bullet at v
-        //probably remove this
-        //Vector3 v = new Vector3(transform.position.x, transform.position.y);
-
         //new bullet spawns on top of tower
         if (target != null)
         {
@@ -191,9 +198,12 @@ public class TowerBehaviour : MonoBehaviour
         }
     }
 
-
+    /**
+     * Returns a list of all enemies
+     */
     private LinkedList<GameObject> getEnemies()
     {
+        return gameManager.Enemies;
         LinkedList<GameObject> list = new LinkedList<GameObject>();
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {

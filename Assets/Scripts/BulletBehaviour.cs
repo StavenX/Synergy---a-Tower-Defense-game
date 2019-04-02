@@ -15,7 +15,7 @@ public class BulletBehaviour : MonoBehaviour
     void Start()
     {
         damage = 10.0f;
-        bulletSpeed = 25.0f;
+        bulletSpeed = 30.0f;
         totalBullets++;
     }
 
@@ -26,18 +26,20 @@ public class BulletBehaviour : MonoBehaviour
         {
             if (target == null)
             {
-                moveToPosition(lastTargetPos);
+                //BUG: bullet randomly goes to 0,0 might be here
+                moveTowardsPosition(lastTargetPos);
                 if (transform.position == lastTargetPos)
                 {
                     Destroy(gameObject);
                 }
             }
-            else
-            {
-                lastTargetPos = target.position;
-                moveToPosition(target.position);
+            else //has valid target
+            {                
+                lastTargetPos = target.position; //value used during next Update()
+                moveTowardsPosition(target.position);
             }            
         }
+        //Not sure which Exceptions are correct
         //target already destroyed
         catch (MissingReferenceException) {
             Destroy(gameObject);
@@ -49,7 +51,12 @@ public class BulletBehaviour : MonoBehaviour
         
     }
 
-    private void moveToPosition(Vector3 position)
+    /**
+     * Moves bullet towards a position
+     * Use target as parameter
+     * TODO: just use target in this method?
+     */
+    private void moveTowardsPosition(Vector3 position)
     {
         transform.position = Vector3.MoveTowards(transform.position, position, Time.deltaTime * bulletSpeed);
     }

@@ -20,11 +20,15 @@ public class GameManagerBehaviour : MonoBehaviour
     public Text gameOverLabel;
     private bool gameOver;
 
+    private int enemiesKilled;
+
+    private LinkedList<GameObject> enemies;
+
 
     private void Start()
     {
         Gold = 1000;
-        Health = 10;
+        Health = 40;
     }
 
     private void Update()
@@ -32,8 +36,12 @@ public class GameManagerBehaviour : MonoBehaviour
         if (Health <= 0)
         {
             GameOver = true;
-            Debug.Log("gameover: " + gameOverLabel.text);
+            //Debug.Log("gameover: " + gameOverLabel.text);
+            StopCoroutine(gameObject.GetComponent<CreateEnemies>().spawnEnemies());
             gameObject.GetComponent<GameOver>().RestartLevel();
+        }
+        else
+        {
         }
     }
 
@@ -93,7 +101,27 @@ public class GameManagerBehaviour : MonoBehaviour
         set
         {
             gameOver = value;
-            gameOverLabel.GetComponent<Text>().text = "GAME !UNDER";
+            //gameOverLabel.GetComponent<Text>().text = "GAME !UNDER";
+            gameOverLabel.GetComponent<Text>().color = Color.white;
+        }
+    }
+
+    public int EnemiesKilled
+    {
+        get { return enemiesKilled; }
+        set
+        {
+            enemiesKilled = value;
+        }
+    }
+
+    public LinkedList<GameObject> Enemies
+    {
+        get
+        {
+            var list = GameObject.FindGameObjectsWithTag("Enemy");
+            enemies = new LinkedList<GameObject>(list);
+            return enemies;
         }
     }
 }
