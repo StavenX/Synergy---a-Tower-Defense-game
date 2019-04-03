@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlaceTower : MonoBehaviour {
 
-    public GameObject monsterPrefab;
+    public static GameObject monsterPrefab;
     private GameObject monster;
     private GameManagerBehaviour gameManager;
     public int towerCost;
@@ -45,26 +45,33 @@ public class PlaceTower : MonoBehaviour {
      */
     private void OnMouseUp()
     {
-        if (CanPlaceMonster())
+        if (monsterPrefab == null)
         {
-            monster = (GameObject)
-                Instantiate(monsterPrefab, transform.position, Quaternion.identity);
-            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.PlayOneShot(audioSource.clip);
-            gameManager.Gold -= towerCost;
-        }
-        else if (CanUpgradeMonster())
-        {
-            monster.GetComponent<MonsterData>().IncreaseLevel();
-            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.PlayOneShot(audioSource.clip);
-
-            gameManager.Gold -= monster.GetComponent<MonsterData>
-                ().CurrentLevel.cost; 
+            Debug.Log("No monster selected");
         }
         else
         {
-            Debug.Log("You don't have enough gold!");
+            if (CanPlaceMonster())
+            {
+                monster = (GameObject)
+                    Instantiate(monsterPrefab, transform.position, Quaternion.identity);
+                AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+                audioSource.PlayOneShot(audioSource.clip);
+                gameManager.Gold -= towerCost;
+            }
+            else if (CanUpgradeMonster())
+            {
+                monster.GetComponent<MonsterData>().IncreaseLevel();
+                AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+                audioSource.PlayOneShot(audioSource.clip);
+
+                gameManager.Gold -= monster.GetComponent<MonsterData>
+                    ().CurrentLevel.cost;
+            }
+            else
+            {
+                Debug.Log("You don't have enough gold!");
+            }
         }
     }
 
