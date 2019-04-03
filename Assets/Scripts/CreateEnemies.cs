@@ -83,7 +83,7 @@ public class CreateEnemies : MonoBehaviour
                 yield return null;
             }
             nextWave();
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(0);
             StartCoroutine("spawnEnemies");
         }
     }

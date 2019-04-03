@@ -38,7 +38,7 @@ public class GameManagerBehaviour : MonoBehaviour
             GameOver = true;
             //Debug.Log("gameover: " + gameOverLabel.text);
             StopCoroutine(gameObject.GetComponent<CreateEnemies>().spawnEnemies());
-            gameObject.GetComponent<GameOver>().RestartLevel();
+            //gameObject.GetComponent<GameOver>().RestartLevel();
         }
         else
         {
@@ -101,9 +101,16 @@ public class GameManagerBehaviour : MonoBehaviour
         set
         {
             gameOver = value;
+            gameOverLabel.transform.position = Vector3.MoveTowards(gameOverLabel.transform.position, new Vector3(450, 0, 0), Time.deltaTime * 500);
             //gameOverLabel.GetComponent<Text>().text = "GAME !UNDER";
-            gameOverLabel.GetComponent<Text>().color = Color.white;
+            StartCoroutine(Wait(5));
+            //gameOverLabel.GetComponent<Text>().color = Color.white;
         }
+    }
+
+    private IEnumerator Wait(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
     }
 
     public int EnemiesKilled

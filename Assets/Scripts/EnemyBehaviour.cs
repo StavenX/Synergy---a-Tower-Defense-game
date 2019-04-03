@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    private float HP;
+    public float HP;
     public Vector3 waypoint;
 
     private List<GameObject> waypoints = new List<GameObject>();
@@ -16,11 +16,16 @@ public class EnemyBehaviour : MonoBehaviour
         get { return this.currentWaypoint; }
         set { this.currentWaypoint = value; }
     }
+
+    public float minimumSpeed = 1f;
     private float speed;
     public float Speed
     {
         get { return speed; }
-        set { speed = value; }
+        set {
+            value = value < minimumSpeed ? minimumSpeed : value;
+            speed = value;
+        }
     }
     private static int speedCounter = 0;
 
@@ -41,7 +46,6 @@ public class EnemyBehaviour : MonoBehaviour
     void Start()
     {
         HP = 80.0f;
-
         loadWaypoints();
 
         currentWaypoint = 0;

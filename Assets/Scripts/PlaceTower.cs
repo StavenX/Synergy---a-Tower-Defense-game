@@ -7,7 +7,7 @@ public class PlaceTower : MonoBehaviour {
     public GameObject monsterPrefab;
     private GameObject monster;
     private GameManagerBehaviour gameManager;
-    public int towerCost;
+    public int towerCost = 500;
 
     /**
      *  Only allows one monster per tower-spot. If monster is null, no monster is here 
@@ -25,7 +25,7 @@ public class PlaceTower : MonoBehaviour {
         
         return (monster == null && gameManager.Gold >= towerCost);
     }
-
+    /*
     private bool CanUpgradeMonster()
     {
         if (monster != null)
@@ -39,7 +39,7 @@ public class PlaceTower : MonoBehaviour {
         }
 
         return false;
-    }
+    }*/
 
     /**
      *  Places a monster on the location if there is an open spot. 
@@ -53,7 +53,7 @@ public class PlaceTower : MonoBehaviour {
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.PlayOneShot(audioSource.clip);
             gameManager.Gold -= towerCost;
-        }
+        }/*
         else if (CanUpgradeMonster())
         {
             monster.GetComponent<MonsterData>().IncreaseLevel();
@@ -62,7 +62,7 @@ public class PlaceTower : MonoBehaviour {
 
             gameManager.Gold -= monster.GetComponent<MonsterData>
                 ().CurrentLevel.cost; 
-        }
+        }*/
         else
         {
             Debug.Log("You don't have enough gold!");
@@ -71,7 +71,6 @@ public class PlaceTower : MonoBehaviour {
 
     private void Start()
     {
-        towerCost = 500;
         gameManager =
             GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
     }

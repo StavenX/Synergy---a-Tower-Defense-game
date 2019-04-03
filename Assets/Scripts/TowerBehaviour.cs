@@ -13,6 +13,11 @@ public class TowerBehaviour : MonoBehaviour
 
     private GameManagerBehaviour gameManager;
 
+    public bool doesRotate = false;
+
+    public Vector3 bulletSpawnOffset;
+    private Vector3 spawnLocation;
+
 
     // The target marker.
     public Transform target;
@@ -30,7 +35,7 @@ public class TowerBehaviour : MonoBehaviour
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
 
         //how long the tower has to wait between each shot
-        towerWaitingPeriod = 40;
+        towerWaitingPeriod = 20;
 
         System.Random rand = new System.Random();
         frameCounter = rand.Next(0, towerWaitingPeriod - 1);
@@ -39,6 +44,11 @@ public class TowerBehaviour : MonoBehaviour
 
         //how far the tower can shoot
         towerRange = 8.0f;
+        
+        //offset set on prefab in unity editor
+        Vector3 a = transform.position;
+        Vector3 b = bulletSpawnOffset;
+        spawnLocation = new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 
 
         enemies = getEnemies();
@@ -121,7 +131,7 @@ public class TowerBehaviour : MonoBehaviour
             int furthestWaypoint = -1;
             Transform priorityEnemy = null;
 
-            foreach (GameObject enemy in enemies)
+            foreach (GameObject enemy in getEnemies())
             {
                 if (isInRange(enemy.transform))
                 {
@@ -159,13 +169,17 @@ public class TowerBehaviour : MonoBehaviour
      */
     private void rotateToTarget()
     {
+        if (!doesRotate)
+        {            
+            return;
+        }
         if (target != null)
         {
             Vector3 vectorToTarget = target.position - transform.position;
             float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
             Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
 
-            //Slerp or RotateTowards methods  
+            //Slerp or RotateTowards methods
             transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
         }
     }
@@ -189,7 +203,7 @@ public class TowerBehaviour : MonoBehaviour
         if (target != null)
         {
             bullet = (GameObject)
-                    Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+                    Instantiate(bulletPrefab, spawnLocation, Quaternion.identity);
             bullet.GetComponent<BulletBehaviour>().target = this.target;
 
             //play sound (laser)
@@ -204,12 +218,14 @@ public class TowerBehaviour : MonoBehaviour
     private LinkedList<GameObject> getEnemies()
     {
         return gameManager.Enemies;
+        /*
         LinkedList<GameObject> list = new LinkedList<GameObject>();
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
             list.AddLast(enemy);
         }
         return list;
+        */
     }
 
 }

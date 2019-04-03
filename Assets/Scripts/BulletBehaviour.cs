@@ -15,7 +15,7 @@ public class BulletBehaviour : MonoBehaviour
     void Start()
     {
         damage = 10.0f;
-        bulletSpeed = 30.0f;
+        bulletSpeed = 25.0f;
         totalBullets++;
     }
 
