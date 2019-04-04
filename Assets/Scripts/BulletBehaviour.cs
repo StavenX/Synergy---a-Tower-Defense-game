@@ -9,28 +9,46 @@ public class BulletBehaviour : MonoBehaviour
     public float damage;
     public float bulletSpeed;
 
+    private Vector3 lastTargetPos;
+
     // Start is called before the first frame update
     void Start()
     {
         damage = 10.0f;
-        bulletSpeed = 10.0f;
+        bulletSpeed = 30.0f;
         totalBullets++;
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void FixedUpdate()
     {
         try
         {
+            if (target.position == new Vector3(0,0,0))
+            {
+                Debug.Log("annoying AS FUCK bug happened");
+            }
+
             if (target == null)
             {
-                Destroy(gameObject);
+                //BUG: bullet randomly goes to 0,0 might be here
+                moveTowardsPosition(lastTargetPos);
+                if (transform.position == lastTargetPos)
+                {
+                    Destroy(gameObject);
+                }
             }
-            else
+            else //has valid target
             {
-                transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * bulletSpeed);
+                var lastPos = transform.position;
+                moveTowardsPosition(target.position);
+                var newPos = transform.position;
+                if (lastPos == newPos)
+                {
+                    Destroy(gameObject);
+                }
             }            
         }
+        //Not sure which Exceptions are correct
         //target already destroyed
         catch (MissingReferenceException) {
             Destroy(gameObject);
@@ -42,13 +60,28 @@ public class BulletBehaviour : MonoBehaviour
         
     }
 
+    /**
+     * Moves bullet towards a position
+     * Use target as parameter
+     * TODO: just use target in this method?
+     */
+    private void moveTowardsPosition(Vector3 position)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, position, Time.deltaTime * bulletSpeed);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            collision.gameObject.GetComponent<EnemyBehaviour>().takeDamage(damage);
+            var enemy = collision.gameObject.GetComponent<EnemyBehaviour>();
+            var HP = enemy.takeDamage(damage);
+            if (HP <= 0)
+            {
+                enemy.die();
+            }
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
 
 

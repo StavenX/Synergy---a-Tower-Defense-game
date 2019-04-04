@@ -1,105 +1,130 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class TowerBehaviour : MonoBehaviour
 {
+    [Header("Attributes")]
+    public float towerRange = 8f;
     public GameObject bulletPrefab;
+
     private GameObject bullet;
-    private int counter;
-    private LinkedList<GameObject> enemies;
+    private GameManagerBehaviour gameManager;
+    private MonsterData monsterData;
+    private Transform target;
 
 
-    // The target marker.
-    public Transform target;
+    public bool doesRotate = true;
+    private float rotationAmount = 10f;
 
-    // Angular speed in radians per sec.
-    float speed;
-    float rotationAmount;
+    public Vector3 bulletSpawnOffset;
+    private Vector3 spawnLocation;
 
-    int towerWaitingPeriod;
-    float towerRange;
+    /* THIS IS A TEST VALUE */
+    private int attackCounter = 60;
 
     // Start is called before the first frame update
     void Start()
     {
-        counter = 0;
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
+        monsterData = GetComponent<MonsterData>();
 
-        //how long the tower has to wait between each shot
-        towerWaitingPeriod = 30;
-
-        //how far the tower can shoot
-        towerRange = 5.0f;
-
-
-        enemies = new LinkedList<GameObject>();
-
-                
-        //high speed means towers instantly turns to target, lower speed means they turn slowly
-        //(if using Time.deltaTime * speed)
-        //speed = 200.0f;
-
-        //amount a tower rotates towards target every frame
-        //1.0 = 100%, 0.5 = 50% etc.
-        rotationAmount = 1.0f;
-
-        //sets rotation target to a an enemy
-        target = getNewTarget();
+        Vector3 a = transform.position;
+        Vector3 b = bulletSpawnOffset;
+        spawnLocation = new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
-    
-    // Update is called once per frame
-    void Update()
+
+    private void FixedUpdate()
     {
-        this.enemies = getEnemies();
-
-        counter++;
-
-        //reduces amount of work per update to reduce strain on computer
-        if (counter % towerWaitingPeriod * Time.deltaTime == 0)
+        if (target == null)
         {
-            //rotates towers 90 degrees
-            //transform.Rotate(Vector3.forward * -90);
+            target = getNewTarget();
+        }
+        else
+        {
+            rotateToTarget();
 
-            if (target != null)
-            { 
-                //gets new target and rotates if not in range
-                if (!isInRange(target))
-                {
-                    target = getNewTarget();
-                    rotateToTarget();
-                }
-                //rotates and shoots if in range of target
-                else
-                {
-                    rotateToTarget();
-                    shootBullet();
-                }               
-            } else
+            if (attackCounter >= 60)
             {
-                target = getNewTarget();
+                shootBullet();
+                attackCounter = 0;
+            }
+            else
+            {
+                attackCounter++;
             }
         }
-    }    
+        
+    }
 
+    /**
+     * Checks if tower is in range of the Transform object
+     */
     private bool isInRange(Transform t)
     {
         return Vector3.Distance(transform.position, t.position) <= towerRange;
     }
 
     /**
+     * Tower shoots a bullet at it's current target
+     */
+    private void shootBullet()
+    {
+        //new bullet spawns on top of tower
+        if (target != null)
+        {
+            bullet = (GameObject)
+                    Instantiate(bulletPrefab, spawnLocation, Quaternion.identity);
+            bullet.GetComponent<BulletBehaviour>().target = target;
+            bullet.transform.SetParent(gameObject.transform);
+
+            //play sound (laser)
+            AudioSource audio = bullet.GetComponent<AudioSource>();
+            audio.PlayOneShot(audio.clip);
+        }
+        else
+        {
+            target = getNewTarget();
+        }
+    }
+
+    /**
+      * Rotates the tower to its current target
+      */
+    private void rotateToTarget()
+    {
+        if (!doesRotate)
+        {
+            return;
+        }
+        if (target != null)
+        {
+            Vector3 vectorToTarget = target.position - transform.position;
+            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
+            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            //Slerp or RotateTowards methods  
+            transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
+        }
+    }
+
+    /**
      * Returns the enemy that is closest to their endgame
      * Returns null if no targets are available for current tower
      */
+     //for enemy CLOSEST TO END
     private Transform getNewTarget()
     {
         try
         {
             //temp values, will always be overwritten unless enemies is empty
-            //in which case function ends up returning null
+            //in which case function ends up returning null -- or throw an exception, depends what we choose to keep
             int furthestWaypoint = -1;
-            Transform priorityEnemy = null;
+            Transform priorityEnemy = null; //is Transform because Vector3 can't be null
 
-            foreach (GameObject enemy in enemies)
+            foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
             {
                 if (isInRange(enemy.transform))
                 {
@@ -108,10 +133,17 @@ public class TowerBehaviour : MonoBehaviour
                     //sets new priorityenemy if they have reached a waypoint further along the map
                     if (enemyWaypoint > furthestWaypoint)
                     {
-                        priorityEnemy = enemy.transform;
-                        furthestWaypoint = enemyWaypoint;
+                        if (enemy != null)
+                        {
+                            priorityEnemy = enemy.transform;
+                            furthestWaypoint = enemyWaypoint;
+                        }
                     }
-                }                
+                }
+            }
+            if (priorityEnemy == null)
+            {
+                throw new NullReferenceException("There are no targets within range of this tower");
             }
             return priorityEnemy;
         }
@@ -124,54 +156,38 @@ public class TowerBehaviour : MonoBehaviour
             return null;
         }
     }
-
-    private void rotateToTarget()
-    {
-        if (target != null)
-        {
-            Vector3 vectorToTarget = target.position - transform.position;
-            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
-            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-
-            //Slerp or RotateTowards methods  
-            transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
-        }
-    }
-
-    /*
-     * Fires a bullet when a tower is clicked
-     * Debug use mostly
-     * */
-    private void OnMouseUp()
-    {
-        shootBullet();
-        
-    }
-
+    
     /**
-     * Tower shoots a bullet
+     *  Updates the current target that the tower is tracking
      * */
-    void shootBullet()
+     /* //for NEAREST enemy
+    private void updateTarget()
     {
-        //use v as second constructor parameter for bullet to place bullet at v
-        //probably remove this
-        //Vector3 v = new Vector3(transform.position.x, transform.position.y);
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        float shortestDistance = Mathf.Infinity;
+        GameObject nearestEnemy = null; 
 
-        //new bullet spawns on top of tower
-        bullet = (GameObject)
-                Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-        bullet.GetComponent<BulletBehaviour>().target = this.target;
-    }
-
-
-    private LinkedList<GameObject> getEnemies()
-    {
-        LinkedList<GameObject> list = new LinkedList<GameObject>();
-        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        // Finds all enemies
+        foreach(GameObject enemy in enemies)
         {
-            list.AddLast(enemy);
-        }
-        return list;
-    }
+            // Get distance to enemy
+            float distanceToEnemy = Vector2.Distance(transform.position, enemy.transform.position);
 
+            // Check if distance is shorter than any other
+            if (distanceToEnemy < shortestDistance)
+            {
+                shortestDistance = distanceToEnemy;
+                nearestEnemy = enemy;
+            }
+        }
+
+        if (nearestEnemy != null) //&& shortestDistance <= range)
+        {
+            target = nearestEnemy.transform; 
+        } else
+        {
+            target = null; 
+        }
+    }
+    */
 }

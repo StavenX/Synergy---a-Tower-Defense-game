@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class PlaceTower : MonoBehaviour {
 
-    public GameObject monsterPrefab;
+    public static GameObject monsterPrefab;
     private GameObject monster;
     private GameManagerBehaviour gameManager;
-    public int towerCost;
+    public int towerCost = 500;
+
+    private bool printedReason = false;
+
+    private void Start()
+    {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
+    }
 
     /**
      *  Only allows one monster per tower-spot. If monster is null, no monster is here 
@@ -15,14 +22,10 @@ public class PlaceTower : MonoBehaviour {
      */
     private bool CanPlaceMonster()
     {
-        /*
-        //doesn't work @EDVIN pls fix
         int cost = monsterPrefab.GetComponent<MonsterData>
             ().levels[0].cost;
 
-        return monster == null && gameManager.Gold >= cost; 
-        */
-        return (monster == null && gameManager.Gold >= towerCost);
+        return monster == null && gameManager.Gold >= cost;
     }
 
     private bool CanUpgradeMonster()
@@ -33,7 +36,12 @@ public class PlaceTower : MonoBehaviour {
             MonsterLevel nextLevel = monsterData.GetNextLevel();
             if (nextLevel != null)
             {
-                return gameManager.Gold >= nextLevel.cost; 
+                return gameManager.Gold >= nextLevel.cost;
+            }
+            else
+            {
+                Debug.Log("Tower already fully upgraded");
+                printedReason = true;
             }
         }
 
@@ -45,34 +53,37 @@ public class PlaceTower : MonoBehaviour {
      */
     private void OnMouseUp()
     {
-        if (CanPlaceMonster())
+        if (monsterPrefab == null)
         {
-            monster = (GameObject)
-                Instantiate(monsterPrefab, transform.position, Quaternion.identity);
-            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.PlayOneShot(audioSource.clip);
-            gameManager.Gold -= towerCost;
-        }
-        else if (CanUpgradeMonster())
-        {
-            monster.GetComponent<MonsterData>().IncreaseLevel();
-            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.PlayOneShot(audioSource.clip);
-
-            gameManager.Gold -= monster.GetComponent<MonsterData>
-                ().CurrentLevel.cost; 
+            monsterPrefab = (GameObject) Resources.Load("Prefabs/Monster", typeof(GameObject));
         }
         else
         {
-            Debug.Log("You don't have enough gold!");
+            if (CanPlaceMonster())
+            {
+                monster = (GameObject)
+                    Instantiate(monsterPrefab, transform.position, Quaternion.identity);
+                AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+                audioSource.PlayOneShot(audioSource.clip);
+                spendGoldOn(monster);
+            }
+            else if (CanUpgradeMonster())
+            {
+                monster.GetComponent<MonsterData>().IncreaseLevel();
+                AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+                audioSource.PlayOneShot(audioSource.clip);
+                spendGoldOn(monster);
+            }
+            else if (!printedReason)
+            {
+                Debug.Log("You don't have enough gold!");
+            }
         }
     }
 
-    private void Start()
+    private void spendGoldOn(GameObject g)
     {
-        towerCost = 200;
-        gameManager =
-            GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
+        gameManager.Gold -= monster.GetComponent<MonsterData>().CurrentLevel.cost;
+        if (gameManager.Gold < 0) Debug.Log("woops negative gold");
     }
-
 }
