@@ -6,97 +6,51 @@ using UnityEngine;
 
 public class TowerBehaviour : MonoBehaviour
 {
+    [Header("Attributes")]
+    public float towerRange = 8f;
     public GameObject bulletPrefab;
+    public int towerWaitingPeriod;
+
     private GameObject bullet;
-    private int frameCounter;
-    private LinkedList<GameObject> enemies;
-
     private GameManagerBehaviour gameManager;
+    private MonsterData monsterData;
+    private int frameCounter;
+    private Transform target;
 
+    private float rotationAmount = 10f; 
 
-    // The target marker.
-    public Transform target;
-
-    // Angular speed in radians per sec.
-    float speed;
-    float rotationAmount;
-
-    int towerWaitingPeriod;
-    float towerRange;
+    /* THIS IS A TEST VALUE */
+    private int attackCounter = 60;
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
-
-        //how long the tower has to wait between each shot
-        towerWaitingPeriod = 40;
-
+        monsterData = GetComponent<MonsterData>();
         System.Random rand = new System.Random();
         frameCounter = rand.Next(0, towerWaitingPeriod - 1);
-        //frameCounter = 0;
-
-
-        //how far the tower can shoot
-        towerRange = 8.0f;
-
-
-        enemies = getEnemies();
-
-                
-        //high speed means towers instantly turns to target, lower speed means they turn slowly
-        //(if using Time.deltaTime * speed)
-        //speed = 200.0f;
-
-        //amount a tower rotates towards target every frame
-        //1.0 = 100%, 0.5 = 50% etc.
-        rotationAmount = 1.0f;
-
-        //sets rotation target to a an enemy
-        target = getNewTarget();
     }
-    
+
+    private void FixedUpdate()
+    {
+        updateTarget();
+        rotateToTarget();
+
+        if (attackCounter >= 60)
+        {
+            shootBullet();
+            attackCounter = 0; 
+        } else
+        {
+            attackCounter++; 
+        }
+        
+    }
+
     // Update is called once per frame
     void Update()
     {
-        this.enemies = getEnemies();
-
-        frameCounter++;
-
-        //shootBullet();
-
-        //reduces amount of work per update to reduce strain on computer
-        if (frameCounter % towerWaitingPeriod * Time.deltaTime == 0)
-        {
-            try
-            {
-                if (target != null)
-                {
-                    //gets new target and rotates if not in range
-                    if (!isInRange(target))
-                    {
-                        target = getNewTarget();
-                        rotateToTarget();
-                        shootBullet();
-                    }
-                    //rotates and shoots if in range of target
-                    else
-                    {
-                        rotateToTarget();
-                        shootBullet();
-                    }
-                }
-                else
-                {
-                    target = getNewTarget();
-                    rotateToTarget();
-                    shootBullet();
-                }
-            } catch (NullReferenceException ex)
-            {
-                Debug.Log(ex.Message);
-            }
-        }
+        //frameCounter++;
     }    
 
 
@@ -109,81 +63,9 @@ public class TowerBehaviour : MonoBehaviour
     }
 
     /**
-     * Returns the enemy that is closest to their endgame
-     * Returns null if no targets are available for current tower
-     */
-    private Transform getNewTarget()
-    {
-        try
-        {
-            //temp values, will always be overwritten unless enemies is empty
-            //in which case function ends up returning null -- or throw an exception, depends what we choose to keep
-            int furthestWaypoint = -1;
-            Transform priorityEnemy = null;
-
-            foreach (GameObject enemy in enemies)
-            {
-                if (isInRange(enemy.transform))
-                {
-                    int enemyWaypoint = enemy.GetComponent<EnemyBehaviour>().CurrentWaypoint;
-
-                    //sets new priorityenemy if they have reached a waypoint further along the map
-                    if (enemyWaypoint > furthestWaypoint)
-                    {
-                        if (enemy != null)
-                        {
-                            priorityEnemy = enemy.transform;
-                            furthestWaypoint = enemyWaypoint;
-                        }
-                    }
-                }                
-            }
-            if (priorityEnemy == null)
-            {
-                throw new NullReferenceException("There are no targets within range of this tower");
-            }
-            return priorityEnemy;
-        }
-        catch (System.NullReferenceException)
-        {
-            return null;
-        }
-        catch (System.Exception)
-        {
-            return null;
-        }
-    }
-
-    /**
-     * Rotates the tower to its current target
-     */
-    private void rotateToTarget()
-    {
-        if (target != null)
-        {
-            Vector3 vectorToTarget = target.position - transform.position;
-            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
-            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-
-            //Slerp or RotateTowards methods  
-            transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
-        }
-    }
-
-    /**
-     * Fires a bullet when a tower is clicked
-     * Debug use mostly
-     * */
-    private void OnMouseUp()
-    {
-        shootBullet();
-        
-    }
-
-    /**
      * Tower shoots a bullet at it's current target
-     * */
-    void shootBullet()
+     */
+    private void shootBullet()
     {
         //new bullet spawns on top of tower
         if (target != null)
@@ -199,17 +81,50 @@ public class TowerBehaviour : MonoBehaviour
     }
 
     /**
-     * Returns a list of all enemies
-     */
-    private LinkedList<GameObject> getEnemies()
+      * Rotates the tower to its current target
+      */
+    private void rotateToTarget()
     {
-        return gameManager.Enemies;
-        LinkedList<GameObject> list = new LinkedList<GameObject>();
-        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        if (target != null)
         {
-            list.AddLast(enemy);
+            Vector3 vectorToTarget = target.position - transform.position;
+            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 180;
+            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            //Slerp or RotateTowards methods  
+            transform.rotation = Quaternion.Slerp(transform.rotation, q, rotationAmount);
         }
-        return list;
     }
 
+    /**
+     *  Updates the current target that the tower is tracking
+     * */
+    private void updateTarget()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        float shortestDistance = Mathf.Infinity;
+        GameObject nearestEnemy = null; 
+
+        // Finds all enemies
+        foreach(GameObject enemy in enemies)
+        {
+            // Get distance to enemy
+            float distanceToEnemy = Vector2.Distance(transform.position, enemy.transform.position);
+
+            // Check if distance is shorter than any other
+            if (distanceToEnemy < shortestDistance)
+            {
+                shortestDistance = distanceToEnemy;
+                nearestEnemy = enemy;
+            }
+        }
+
+        if (nearestEnemy != null) //&& shortestDistance <= range)
+        {
+            target = nearestEnemy.transform; 
+        } else
+        {
+            target = null; 
+        }
+    }
 }

@@ -7,7 +7,12 @@ public class PlaceTower : MonoBehaviour {
     public GameObject monsterPrefab;
     private GameObject monster;
     private GameManagerBehaviour gameManager;
-    public int towerCost;
+    public int towerCost = 500;
+
+    private void Start()
+    {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
+    }
 
     /**
      *  Only allows one monster per tower-spot. If monster is null, no monster is here 
@@ -15,15 +20,12 @@ public class PlaceTower : MonoBehaviour {
      */
     private bool CanPlaceMonster()
     {
-        //doesn't work @EDVIN pls fix
-        /*
         int cost = monsterPrefab.GetComponent<MonsterData>
             ().levels[0].cost;
 
         return monster == null && gameManager.Gold >= cost; 
-        */
         
-        return (monster == null && gameManager.Gold >= towerCost);
+        //return (monster == null && gameManager.Gold >= towerCost);
     }
 
     private bool CanUpgradeMonster()
@@ -68,12 +70,4 @@ public class PlaceTower : MonoBehaviour {
             Debug.Log("You don't have enough gold!");
         }
     }
-
-    private void Start()
-    {
-        towerCost = 500;
-        gameManager =
-            GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
-    }
-
 }
