@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlaceTower : MonoBehaviour {
 
-    public GameObject monsterPrefab;
+    public static GameObject monsterPrefab;
     private GameObject monster;
     private GameManagerBehaviour gameManager;
     public int towerCost = 500;
@@ -53,24 +53,31 @@ public class PlaceTower : MonoBehaviour {
      */
     private void OnMouseUp()
     {
-        if (CanPlaceMonster())
+        if (monsterPrefab == null)
         {
-            monster = (GameObject)
-                Instantiate(monsterPrefab, transform.position, Quaternion.identity);
-            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.PlayOneShot(audioSource.clip);
-            spendGoldOn(monster);
+            Debug.Log("No monster selected");
         }
-        else if (CanUpgradeMonster())
+        else
         {
-            monster.GetComponent<MonsterData>().IncreaseLevel();
-            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.PlayOneShot(audioSource.clip);
-            spendGoldOn(monster); 
-        }
-        else if (!printedReason)
-        {
-            Debug.Log("You don't have enough gold!");
+            if (CanPlaceMonster())
+            {
+                monster = (GameObject)
+                    Instantiate(monsterPrefab, transform.position, Quaternion.identity);
+                AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+                audioSource.PlayOneShot(audioSource.clip);
+                spendGoldOn(monster);
+            }
+            else if (CanUpgradeMonster())
+            {
+                monster.GetComponent<MonsterData>().IncreaseLevel();
+                AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+                audioSource.PlayOneShot(audioSource.clip);
+                spendGoldOn(monster);
+            }
+            else if (!printedReason)
+            {
+                Debug.Log("You don't have enough gold!");
+            }
         }
     }
 

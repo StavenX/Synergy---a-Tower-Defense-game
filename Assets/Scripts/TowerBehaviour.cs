@@ -9,14 +9,18 @@ public class TowerBehaviour : MonoBehaviour
     [Header("Attributes")]
     public float towerRange = 8f;
     public GameObject bulletPrefab;
-    public int towerWaitingPeriod;
 
     private GameObject bullet;
     private GameManagerBehaviour gameManager;
     private MonsterData monsterData;
     private Transform target;
 
-    private float rotationAmount = 10f; 
+
+    public bool doesRotate = true;
+    private float rotationAmount = 10f;
+
+    public Vector3 bulletSpawnOffset;
+    private Vector3 spawnLocation;
 
     /* THIS IS A TEST VALUE */
     private int attackCounter = 60;
@@ -26,6 +30,10 @@ public class TowerBehaviour : MonoBehaviour
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
         monsterData = GetComponent<MonsterData>();
+
+        Vector3 a = transform.position;
+        Vector3 b = bulletSpawnOffset;
+        spawnLocation = new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
 
     private void FixedUpdate()
@@ -68,7 +76,7 @@ public class TowerBehaviour : MonoBehaviour
         if (target != null)
         {
             bullet = (GameObject)
-                    Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+                    Instantiate(bulletPrefab, spawnLocation, Quaternion.identity);
             bullet.GetComponent<BulletBehaviour>().target = target;
             bullet.transform.SetParent(gameObject.transform);
 
@@ -87,6 +95,10 @@ public class TowerBehaviour : MonoBehaviour
       */
     private void rotateToTarget()
     {
+        if (!doesRotate)
+        {
+            return;
+        }
         if (target != null)
         {
             Vector3 vectorToTarget = target.position - transform.position;

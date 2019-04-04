@@ -70,6 +70,8 @@
     <Compile Include="Assets\Scripts\MonsterData.cs" />
     <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
     <Compile Include="Assets\Scripts\PlaceTower.cs" />
+    <Compile Include="Assets\Scripts\selectTowerButton.cs" />
+    <Compile Include="Assets\Scripts\ShowOrHideMenu.cs" />
     <Compile Include="Assets\Scripts\StartWave.cs" />
     <Compile Include="Assets\Scripts\TowerBehaviour.cs" />
     <Compile Include="Assets\Scripts\Tutorial.cs" />
