@@ -78,7 +78,7 @@ public class GameManagerBehaviour : MonoBehaviour
         set
         {
             enemiesLeft = value;
-            enemiesLeftLabel.GetComponent<Text>().text = "ENEMIES LEFT: " + enemiesLeft;
+            enemiesLeftLabel.GetComponent<Text>().text = "SPAWNING: " + enemiesLeft;
         }
     }
 

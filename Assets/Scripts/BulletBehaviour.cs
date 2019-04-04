@@ -98,7 +98,7 @@ public class BulletBehaviour : MonoBehaviour
     void deleteBullet()
     {
         int x = (int) transform.position.x;
-        int y = (int)transform.position.y;
+        int y = (int) transform.position.y;
 
         if (x > 10 || x < -10 || y > 10 || y < -10) {
             Destroy(this);

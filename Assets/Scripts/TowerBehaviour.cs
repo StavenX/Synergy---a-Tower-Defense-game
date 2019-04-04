@@ -15,7 +15,6 @@ public class TowerBehaviour : MonoBehaviour
     private MonsterData monsterData;
     private Transform target;
 
-
     public bool doesRotate = true;
     private float rotationAmount = 10f;
 
@@ -46,6 +45,7 @@ public class TowerBehaviour : MonoBehaviour
         {
             rotateToTarget();
 
+            // Basic attacking mechanism. Should really be changed into a coroutine of some sorts
             if (attackCounter >= 60)
             {
                 shootBullet();
