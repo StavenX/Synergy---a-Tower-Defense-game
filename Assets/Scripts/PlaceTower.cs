@@ -9,6 +9,8 @@ public class PlaceTower : MonoBehaviour {
     private GameManagerBehaviour gameManager;
     public int towerCost = 500;
 
+    private bool printedReason = false;
+
     private void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
@@ -23,9 +25,7 @@ public class PlaceTower : MonoBehaviour {
         int cost = monsterPrefab.GetComponent<MonsterData>
             ().levels[0].cost;
 
-        return monster == null && gameManager.Gold >= cost; 
-        
-        //return (monster == null && gameManager.Gold >= towerCost);
+        return monster == null && gameManager.Gold >= cost;
     }
 
     private bool CanUpgradeMonster()
@@ -36,7 +36,12 @@ public class PlaceTower : MonoBehaviour {
             MonsterLevel nextLevel = monsterData.GetNextLevel();
             if (nextLevel != null)
             {
-                return gameManager.Gold >= nextLevel.cost; 
+                return gameManager.Gold >= nextLevel.cost;
+            }
+            else
+            {
+                Debug.Log("Tower already fully upgraded");
+                printedReason = true;
             }
         }
 
@@ -54,20 +59,24 @@ public class PlaceTower : MonoBehaviour {
                 Instantiate(monsterPrefab, transform.position, Quaternion.identity);
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.PlayOneShot(audioSource.clip);
-            gameManager.Gold -= towerCost;
+            spendGoldOn(monster);
         }
         else if (CanUpgradeMonster())
         {
             monster.GetComponent<MonsterData>().IncreaseLevel();
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.PlayOneShot(audioSource.clip);
-
-            gameManager.Gold -= monster.GetComponent<MonsterData>
-                ().CurrentLevel.cost; 
+            spendGoldOn(monster); 
         }
-        else
+        else if (!printedReason)
         {
             Debug.Log("You don't have enough gold!");
         }
+    }
+
+    private void spendGoldOn(GameObject g)
+    {
+        gameManager.Gold -= monster.GetComponent<MonsterData>().CurrentLevel.cost;
+        if (gameManager.Gold < 0) Debug.Log("woops negative gold");
     }
 }

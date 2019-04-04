@@ -18,12 +18,16 @@ public class BulletBehaviour : MonoBehaviour
         bulletSpeed = 30.0f;
         totalBullets++;
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void FixedUpdate()
     {
         try
         {
+            if (target.position == new Vector3(0,0,0))
+            {
+                Debug.Log("annoying AS FUCK bug happened");
+            }
+
             if (target == null)
             {
                 //BUG: bullet randomly goes to 0,0 might be here
@@ -34,9 +38,14 @@ public class BulletBehaviour : MonoBehaviour
                 }
             }
             else //has valid target
-            {                
-                lastTargetPos = target.position; //value used during next Update()
+            {
+                var lastPos = transform.position;
                 moveTowardsPosition(target.position);
+                var newPos = transform.position;
+                if (lastPos == newPos)
+                {
+                    Destroy(gameObject);
+                }
             }            
         }
         //Not sure which Exceptions are correct
@@ -65,13 +74,14 @@ public class BulletBehaviour : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            var HP = collision.gameObject.GetComponent<EnemyBehaviour>().takeDamage(damage);
+            var enemy = collision.gameObject.GetComponent<EnemyBehaviour>();
+            var HP = enemy.takeDamage(damage);
             if (HP <= 0)
             {
-                collision.gameObject.GetComponent<EnemyBehaviour>().die();
+                enemy.die();
             }
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
 
 

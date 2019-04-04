@@ -14,7 +14,6 @@ public class TowerBehaviour : MonoBehaviour
     private GameObject bullet;
     private GameManagerBehaviour gameManager;
     private MonsterData monsterData;
-    private int frameCounter;
     private Transform target;
 
     private float rotationAmount = 10f; 
@@ -27,32 +26,30 @@ public class TowerBehaviour : MonoBehaviour
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
         monsterData = GetComponent<MonsterData>();
-        System.Random rand = new System.Random();
-        frameCounter = rand.Next(0, towerWaitingPeriod - 1);
     }
 
     private void FixedUpdate()
     {
-        updateTarget();
-        rotateToTarget();
+        if (target == null)
+        {
+            target = getNewTarget();
+        }
+        else
+        {
+            rotateToTarget();
 
-        if (attackCounter >= 60)
-        {
-            shootBullet();
-            attackCounter = 0; 
-        } else
-        {
-            attackCounter++; 
+            if (attackCounter >= 60)
+            {
+                shootBullet();
+                attackCounter = 0;
+            }
+            else
+            {
+                attackCounter++;
+            }
         }
         
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //frameCounter++;
-    }    
-
 
     /**
      * Checks if tower is in range of the Transform object
@@ -72,11 +69,16 @@ public class TowerBehaviour : MonoBehaviour
         {
             bullet = (GameObject)
                     Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-            bullet.GetComponent<BulletBehaviour>().target = this.target;
+            bullet.GetComponent<BulletBehaviour>().target = target;
+            bullet.transform.SetParent(gameObject.transform);
 
             //play sound (laser)
             AudioSource audio = bullet.GetComponent<AudioSource>();
             audio.PlayOneShot(audio.clip);
+        }
+        else
+        {
+            target = getNewTarget();
         }
     }
 
@@ -97,8 +99,56 @@ public class TowerBehaviour : MonoBehaviour
     }
 
     /**
+     * Returns the enemy that is closest to their endgame
+     * Returns null if no targets are available for current tower
+     */
+     //for enemy CLOSEST TO END
+    private Transform getNewTarget()
+    {
+        try
+        {
+            //temp values, will always be overwritten unless enemies is empty
+            //in which case function ends up returning null -- or throw an exception, depends what we choose to keep
+            int furthestWaypoint = -1;
+            Transform priorityEnemy = null; //is Transform because Vector3 can't be null
+
+            foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+            {
+                if (isInRange(enemy.transform))
+                {
+                    int enemyWaypoint = enemy.GetComponent<EnemyBehaviour>().CurrentWaypoint;
+
+                    //sets new priorityenemy if they have reached a waypoint further along the map
+                    if (enemyWaypoint > furthestWaypoint)
+                    {
+                        if (enemy != null)
+                        {
+                            priorityEnemy = enemy.transform;
+                            furthestWaypoint = enemyWaypoint;
+                        }
+                    }
+                }
+            }
+            if (priorityEnemy == null)
+            {
+                throw new NullReferenceException("There are no targets within range of this tower");
+            }
+            return priorityEnemy;
+        }
+        catch (System.NullReferenceException)
+        {
+            return null;
+        }
+        catch (System.Exception)
+        {
+            return null;
+        }
+    }
+    
+    /**
      *  Updates the current target that the tower is tracking
      * */
+     /* //for NEAREST enemy
     private void updateTarget()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -127,4 +177,5 @@ public class TowerBehaviour : MonoBehaviour
             target = null; 
         }
     }
+    */
 }

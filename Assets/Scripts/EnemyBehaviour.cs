@@ -47,7 +47,7 @@ public class EnemyBehaviour : MonoBehaviour
         currentWaypoint = 0;
         waypoint = getNextWaypoint();
         
-        speedCounter++;
+        speedCounter+=2;
         speedCounter = speedCounter > 8 ? 0 : speedCounter;
 
         //set speed = speedCounter to have some enemies get faster than their previous enemies

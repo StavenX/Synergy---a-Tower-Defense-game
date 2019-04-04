@@ -22,9 +22,6 @@ public class GameManagerBehaviour : MonoBehaviour
 
     private int enemiesKilled;
 
-    private LinkedList<GameObject> enemies;
-
-
     private void Start()
     {
         Gold = 5000;
@@ -35,10 +32,8 @@ public class GameManagerBehaviour : MonoBehaviour
     {
         if (Health <= 0)
         {
-            GameOver = true;
-            //Debug.Log("gameover: " + gameOverLabel.text);
             StopCoroutine(gameObject.GetComponent<CreateEnemies>().spawnEnemies());
-            gameObject.GetComponent<GameOver>().RestartLevel();
+            StartCoroutine(GameOver());
         }
         else
         {
@@ -94,16 +89,12 @@ public class GameManagerBehaviour : MonoBehaviour
         }
     }
 
-
-    public bool GameOver
+    public IEnumerator GameOver()
     {
-        get { return gameOver; }
-        set
-        {
-            gameOver = value;
-            //gameOverLabel.GetComponent<Text>().text = "GAME !UNDER";
-            gameOverLabel.GetComponent<Text>().color = Color.white;
-        }
+        Resources.FindObjectsOfTypeAll<GameOver>();
+        GameObject.FindGameObjectWithTag("GameOver").GetComponent<Text>().color = new Color(255,255,255);
+        yield return wait(5);
+        gameObject.GetComponent<GameOver>().RestartLevel();
     }
 
     public int EnemiesKilled
@@ -115,13 +106,8 @@ public class GameManagerBehaviour : MonoBehaviour
         }
     }
 
-    public LinkedList<GameObject> Enemies
+    public IEnumerator wait(float seconds)
     {
-        get
-        {
-            var list = GameObject.FindGameObjectsWithTag("Enemy");
-            enemies = new LinkedList<GameObject>(list);
-            return enemies;
-        }
+        yield return new WaitForSeconds(seconds);
     }
 }
