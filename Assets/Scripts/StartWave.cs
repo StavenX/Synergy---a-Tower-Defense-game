@@ -13,6 +13,7 @@ public class StartWave : MonoBehaviour
     {
         buttonText = "START";
 
+
     }
 
     // Update is called once per frame
@@ -21,8 +22,11 @@ public class StartWave : MonoBehaviour
         
     }
 
-    private void OnMouseUp()
+    public void nextWave()
     {
-        
+        gameObject.GetComponentInChildren<Text>().enabled = false;
+        gameObject.GetComponent<Image>().enabled = false;
+        GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>().gamePaused = false;
     }
+        
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CreateEnemies : MonoBehaviour
 {
@@ -83,7 +84,10 @@ public class CreateEnemies : MonoBehaviour
                 yield return null;
             }
             nextWave();
-            yield return new WaitForSeconds(5);
+            while (gameManager.gamePaused)
+            {
+                yield return new WaitForSeconds(.2f);
+            }
             StartCoroutine("spawnEnemies");
         }
     }
@@ -94,6 +98,11 @@ public class CreateEnemies : MonoBehaviour
     private void nextWave()
     {
         Debug.Log("CONGRATULATIONS! WAVE " + gameManager.Wave + " COMPLETED!");
+        gameManager.gamePaused = true;
+        var button = GameObject.Find("NextWave");
+        button.GetComponent<Image>().enabled = true;
+        button.GetComponentInChildren<Text>().enabled = true;
+        
 
         gameManager.Wave++;
         gameManager.EnemiesLeft = gameManager.Wave * 2;

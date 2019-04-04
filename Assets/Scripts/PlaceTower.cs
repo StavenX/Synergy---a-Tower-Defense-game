@@ -55,7 +55,7 @@ public class PlaceTower : MonoBehaviour {
     {
         if (monsterPrefab == null)
         {
-            Debug.Log("No monster selected");
+            monsterPrefab = (GameObject) Resources.Load("Prefabs/Monster", typeof(GameObject));
         }
         else
         {

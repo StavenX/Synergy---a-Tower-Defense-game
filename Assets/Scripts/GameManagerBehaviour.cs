@@ -20,12 +20,15 @@ public class GameManagerBehaviour : MonoBehaviour
     public Text gameOverLabel;
     private bool gameOver;
 
+    public bool gamePaused;
+
     private int enemiesKilled;
 
     private void Start()
     {
         Gold = 5000;
         Health = 40;
+        gamePaused = false;
     }
 
     private void Update()

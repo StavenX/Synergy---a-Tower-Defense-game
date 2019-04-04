@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 681, y: 498}
   m_MaxSize: {x: 14004, y: 14048}
   vertical: 0
-  controlID: 23078
+  controlID: 35535
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -129,7 +129,7 @@ MonoBehaviour:
   m_MinSize: {x: 404, y: 498}
   m_MaxSize: {x: 10002, y: 14048}
   vertical: 1
-  controlID: 23079
+  controlID: 35446
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -154,7 +154,7 @@ MonoBehaviour:
   m_MinSize: {x: 404, y: 224}
   m_MaxSize: {x: 8004, y: 4024}
   vertical: 0
-  controlID: 23080
+  controlID: 35447
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -209,10 +209,10 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 164.49988}
+      scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 1e64ffffdc9affffe29affff4c9bffff529bffffbc9bffffc29bffffa4b1ffffbce2ffffd8e2ffff2ae3ffff38e3ffff70e3ffffa4e3ffff20f6ffffd6f9ffff66faffffccfbffffa02a0000
+      m_ExpandedIDs: 
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -290,14 +290,14 @@ MonoBehaviour:
     height: 437
   m_PersistentViewDataDictionary: {fileID: 0}
   m_WindowGUID: f2c2375d20346f44da898d05d322af49
-  m_SceneLighting: 1
+  m_SceneLighting: 0
   m_2DMode: 1
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 400.7801, y: 169.50865, z: -1}
+    m_Target: {x: 3.8000002, y: -3, z: 0}
     speed: 2
-    m_Value: {x: 400.7801, y: 169.50865, z: -1}
+    m_Value: {x: 3.8000002, y: -3, z: 0}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -329,9 +329,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 501.42072
+    m_Target: 3.0755575
     speed: 2
-    m_Value: 501.42072
+    m_Value: 3.0755575
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -500,9 +500,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 18e3ffff
-    m_LastClickedInstanceID: -7400
-    m_HadKeyboardFocusLastEvent: 0
+    m_SelectedInstanceIDs: 8e210100
+    m_LastClickedInstanceID: 74126
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c62300004c290000fa280000b026000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
