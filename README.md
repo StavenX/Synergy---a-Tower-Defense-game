@@ -34,6 +34,8 @@ Before you start, read the install-guide for the necessary tools you'll need:
 If you wish to contribute, send a message to `edvin_myhren@hotmail.com`, and
 attach resources / ideas. You will then get permission to commit and make pull
 requests.
+For more information about the project, please visit our wiki: 
+<https://github.com/StavenX/Synergy---a-Tower-Defense-game/wiki>
 
 Quick look at early model with some placeholders: 
 ![:)](https://media.discordapp.net/attachments/547403149388939288/581066550602104833/Cgj9P4x.png?width=1037&height=581 ":)")
