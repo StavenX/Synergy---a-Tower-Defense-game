@@ -29,7 +29,7 @@ process so input on these aspects are also appreciated.
 Anyone is welcome as long as you behave and respect that we are new to this development format.
 
 Before you start, read the install-guide for the necessary tools you'll need: 
-`https://github.com/StavenX/Synergy---a-Tower-Defense-game/wiki/Installing-the-necessary-tools`
+<https://github.com/StavenX/Synergy---a-Tower-Defense-game/wiki/Installing-the-necessary-tools>
 
 If you wish to contribute, send a message to `edvin_myhren@hotmail.com`, and
 attach resources / ideas. You will then get permission to commit and make pull
