@@ -35,5 +35,5 @@ If you wish to contribute, send a message to `edvin_myhren@hotmail.com`, and
 attach resources / ideas. You will then get permission to commit and make pull
 requests.
 
-Inline-style: 
+Quick look at early model with some placeholders: 
 ![:)](https://media.discordapp.net/attachments/547403149388939288/581066550602104833/Cgj9P4x.png?width=1037&height=581 ":)")
