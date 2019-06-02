@@ -21,6 +21,7 @@ public class CreateEnemies : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //loads the enemies from resources into an array
         enemyPrefabs = new GameObject[]
         {
             (GameObject)Resources.Load("Prefabs/Enemy", typeof(GameObject)),
@@ -54,8 +55,10 @@ public class CreateEnemies : MonoBehaviour
      */
     void spawnEnemy()
     {
+        //randomly selects a new enemyprefab
         enemyPrefab = enemyPrefabs[enemyPicker.Next(enemyPrefabs.Length)];
         
+        //creates enemy and sets parent to current object (the enemy spawner object - could be multiple spawners at some point)
         enemy = (GameObject)
                 Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         enemy.transform.SetParent(transform);

@@ -25,20 +25,23 @@ public class BulletBehaviour : MonoBehaviour
         {
             if (target.position == new Vector3(0,0,0))
             {
-                Debug.Log("annoying AS FUCK bug happened");
+                Debug.Log("annoying bug occured");
             }
 
             if (target == null)
             {
-                //BUG: bullet randomly goes to 0,0 might be here
+                //TODO: fix BUG, bullet randomly goes to 0,0 might be here
                 moveTowardsPosition(lastTargetPos);
                 if (transform.position == lastTargetPos)
                 {
                     Destroy(gameObject);
                 }
             }
-            else //has valid target
+            //has valid target
+            else 
             {
+                //keeps track of where the bullet is going, and destroys the bullet if it didn't
+                //move any distance during the frame update
                 var lastPos = transform.position;
                 moveTowardsPosition(target.position);
                 var newPos = transform.position;
@@ -48,8 +51,7 @@ public class BulletBehaviour : MonoBehaviour
                 }
             }            
         }
-        //Not sure which Exceptions are correct
-        //target already destroyed
+        //target is already destroyed, and as such the bullet is destroyed as it no longer has a target
         catch (MissingReferenceException) {
             Destroy(gameObject);
         }
@@ -70,6 +72,10 @@ public class BulletBehaviour : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, position, Time.deltaTime * bulletSpeed);
     }
 
+    /**
+     * Each enemy has a trigger collider, and a bullet does damage when it enters that collider
+     * Bullet is destroyed
+     * */
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Enemy")
@@ -84,7 +90,7 @@ public class BulletBehaviour : MonoBehaviour
         }
     }
 
-
+    //Some arbitrary position, used to make debugging easier
     Vector3 somePosition()
     {
         return new Vector3(5, 2, 0);

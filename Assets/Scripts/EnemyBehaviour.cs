@@ -47,12 +47,14 @@ public class EnemyBehaviour : MonoBehaviour
         currentWaypoint = 0;
         waypoint = getNextWaypoint();
         
+        //debugging purposes
         speedCounter+=2;
         speedCounter = speedCounter > 8 ? 0 : speedCounter;
 
         //set speed = speedCounter to have some enemies get faster than their previous enemies
         //use to check that towers prioritise targets correctly
-        Speed = 3; //2-3 is normal, use 80-ish for quick debugging
+        //2-3 is normal, use 80-ish for quick debugging
+        Speed = 3;
 
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerBehaviour>();
     }
@@ -67,6 +69,7 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 waypoint = getNextWaypoint();
             }
+            //enemy has no more waypoints - it has reached the end goal
             catch (System.ArgumentOutOfRangeException)
             {
                 Debug.Log("Oh no! The enemy reached the castle!");
@@ -98,10 +101,13 @@ public class EnemyBehaviour : MonoBehaviour
         return this.HP;
     }
 
+    /**
+     * Increments waypoint number by one and returns the target from the array
+     * */
     private Vector3 getNextWaypoint()
     {
+        currentWaypoint++;
         Vector3 target = waypoints[currentWaypoint].transform.position;
-        this.currentWaypoint++;
         return target;
     }
 

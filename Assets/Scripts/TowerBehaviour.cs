@@ -33,6 +33,8 @@ public class TowerBehaviour : MonoBehaviour
 
         Vector3 a = transform.position;
         Vector3 b = bulletSpawnOffset;
+        //adds the bullet spawn offset to the position of the tower to create the
+        //bullet spawnpoint, as some tower's bullets spawn in different locations
         spawnLocation = new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
 

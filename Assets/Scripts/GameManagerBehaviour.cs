@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/**
+ * This class keeps track of a lot of the values used in the game, 
+ * by multiple classes, such as gold or wave number
+ * */
 public class GameManagerBehaviour : MonoBehaviour
 {
     public Text goldLabel;
@@ -92,10 +96,14 @@ public class GameManagerBehaviour : MonoBehaviour
         }
     }
 
+    /**
+     * Stops the game
+     * */
     public IEnumerator GameOver()
     {
         Resources.FindObjectsOfTypeAll<GameOver>();
         GameObject.FindGameObjectWithTag("GameOver").GetComponent<Text>().color = new Color(255,255,255);
+        //waits 5 seconds after "GAME OVER" to restart the game
         yield return wait(5);
         gameObject.GetComponent<GameOver>().RestartLevel();
     }
