@@ -28,14 +28,9 @@ should be developed or how it should look at the end stages of the development
 process so input on these aspects are also appreciated. 
 Anyone is welcome as long as you behave and respect that we are new to this development format.
 
-Before you start, read the install-guide for the necessary tools you'll need: 
-<https://github.com/StavenX/Synergy---a-Tower-Defense-game/wiki/Installing-the-necessary-tools>
+Before you start, read the [installation guide](https://github.com/StavenX/Synergy---a-Tower-Defense-game/wiki/Installing-the-necessary-tools) for the necessary tools you'll need.
 
-If you wish to contribute, send a message to `edvin_myhren@hotmail.com`, and
-attach resources / ideas. You will then get permission to commit and make pull
-requests.
-For more information about the project, please visit our wiki: 
-<https://github.com/StavenX/Synergy---a-Tower-Defense-game/wiki>
+After this you should read the [contribution guide](https://github.com/StavenX/Synergy---a-Tower-Defense-game/wiki/Contribution-guide) to be sure your are following our standards.
 
 Quick look at early model with some placeholders: 
 ![:)](https://media.discordapp.net/attachments/547403149388939288/581066550602104833/Cgj9P4x.png?width=1037&height=581 ":)")
